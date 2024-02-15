@@ -3,14 +3,18 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class TurnBasedGameClient {
-    private static final String SERVER_ADDRESS = "localhost";
     private static final int PORT = 12345;
 
     public static void main(String[] args) {
-        try (Socket socket = new Socket(SERVER_ADDRESS, PORT);
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-             Scanner scanner = new Scanner(System.in)) {
+        String action = "";
+        try {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Podaj adres IP serwera:");
+            String ip = scanner.nextLine();
+            Socket socket = new Socket( ip, PORT);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+
 
             System.out.println("Connected to the server.");
             System.out.println("Server: " + in.readLine());
@@ -24,13 +28,23 @@ public class TurnBasedGameClient {
                 }
 
                 if (response.contains("Your turn")) {
+                    while (!(action.equals("attack")|| action.equals("defend") || action.equals("evade") ||action.equals("heal"))){
+
                     System.out.print("Enter your action: ");
-                    String action = scanner.nextLine().trim().toLowerCase();
+                    action = scanner.nextLine().trim().toLowerCase();
+                    }
+
                     out.println(action);
+                    action = "";
                 }
             }
+            out.close();
+            in.close();
+            socket.close();
+            scanner.close();
         } catch (IOException e) {
             System.out.println("Client error: " + e.getMessage());
         }
     }
+
 }
