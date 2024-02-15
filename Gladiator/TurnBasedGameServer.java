@@ -121,15 +121,6 @@ public class TurnBasedGameServer {
                     in.close();
                     socket.close();
                     serverSocket.close();
-
-
-
-
-
-
-
-
-
                 } catch (IOException e) {
                     System.out.println("Error handling client: " + e.getMessage());
                 }
